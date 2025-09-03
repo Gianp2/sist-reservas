@@ -290,6 +290,7 @@ async function login(email, password) {
   try {
     const userCredential = await auth.signInWithEmailAndPassword(email, password);
     console.log("Usuario logueado: ", userCredential.user.email);
+    document.getElementById("admin-modal").classList.add("active");
     mostrarTurnosAdmin();
   } catch (error) {
     console.error("Error en login: ", error.code, error.message);
@@ -347,6 +348,8 @@ async function logout() {
 // Mostrar prompt de login para administrador
 function mostrarPromptClave() {
   console.log("Mostrando prompt de login");
+  // Ocultar el admin-modal antes de mostrar el prompt
+  document.getElementById("admin-modal").classList.remove("active");
   Swal.fire({
     title: "Acceso Administrativo",
     html: `
@@ -419,6 +422,9 @@ function mostrarPromptClave() {
     if (result.isConfirmed) {
       const { email, password } = result.value;
       login(email, password);
+    } else {
+      // Asegurarse de que el admin-modal no se muestre si se cancela el login
+      document.getElementById("admin-modal").classList.remove("active");
     }
   }).catch((error) => {
     console.error("Error en el prompt de login: ", error);
@@ -456,7 +462,7 @@ async function handleToggleDisponible(id, currentDisponible) {
           </div>
           <div>
             <label class="block text-sm font-medium mb-1 text-gray-200 font-['Poppins']"><i class="fas fa-phone mr-2 text-yellow-400"></i>Teléfono:</label>
-            <input type="tel" id="toggleTelefono" pattern="[0-9]{10,}" class="w-full p-3 border border-gray-600 rounded-lg bg-gray-900 text-gray-200 focus:outline-none focus:ring-2 focus:ring-yellow-400" placeholder="Ej: 3471511010">
+            <input type="tel" id="toggleTelefono" pattern="[0-9]{10,}" class="w-full p-3 border border-gray-600 rounded-lg bg-gray-900 text-gray-200 focus:outline-none focus:ring-2 focus:ring-yellow-400" placeholder="Ej: 3471234567">
           </div>
         </div>
       `,
@@ -536,7 +542,7 @@ async function handleEditTurno(id, currentFecha, currentHora, currentNombre, cur
         </div>
         <div>
           <label class="block text-sm font-medium mb-1 text-gray-200 font-['Poppins']"><i class="fas fa-phone mr-2 text-yellow-400"></i>Teléfono:</label>
-          <input type="tel" id="editTelefono" value="${currentTelefono}" pattern="[0-9]{10,}" class="w-full p-3 border border-gray-600 rounded-lg bg-gray-900 text-gray-200 focus:outline-none focus:ring-2 focus:ring-yellow-400" placeholder="Ej: 3471511010">
+          <input type="tel" id="editTelefono" value="${currentTelefono}" pattern="[0-9]{10,}" class="w-full p-3 border border-gray-600 rounded-lg bg-gray-900 text-gray-200 focus:outline-none focus:ring-2 focus:ring-yellow-400" placeholder="Ej: 3471234567">
         </div>
       </div>
     `,
@@ -741,7 +747,7 @@ async function importTurnos() {
           Swal.fire({
             icon: "success",
             title: "Turnos importados",
-            text: "Los turnos se han importado correctamente.",
+            text: "Los turnos se han importados correctamente.",
             timer: 1500,
             showConfirmButton: false
           });
@@ -782,7 +788,6 @@ function mostrarTurnosAdmin(selectedDate = "") {
       } else {
         listaMobile.innerHTML = `<p class="text-center text-gray-200">${message}</p>`;
       }
-      document.getElementById("admin-modal").classList.add("active");
       return;
     }
 
@@ -847,8 +852,6 @@ function mostrarTurnosAdmin(selectedDate = "") {
         listaMobile.appendChild(card);
       }
     });
-
-    document.getElementById("admin-modal").classList.add("active");
   }, selectedDate);
 }
 
@@ -1019,7 +1022,7 @@ async function reservarTurno(event) {
 
 // Enviar mensaje de WhatsApp
 function enviarMensajeWhatsapp(nombre, fecha, hora) {
-  const telefono = "5493471511010"; // Número de destino (código de país + número)
+  const telefono = "5493471234567"; // Número de destino (código de país + número)
   const mensaje = `Hola, soy ${nombre}. Quiero confirmar mi turno para el ${fecha} a las ${hora}.`;
   const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
   window.open(url, "_blank"); // Abre WhatsApp Web o app móvil
@@ -1030,30 +1033,48 @@ function enviarMensajeWhatsapp(nombre, fecha, hora) {
 document.addEventListener("DOMContentLoaded", () => {
   console.log("DOM completamente cargado");
 
-  // Verificar elementos del DOM
+  // Verificar autenticación al cargar la página y asegurar que el modal esté cerrado si no hay usuario
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      console.log("Usuario autenticado:", user.email);
+    } else {
+      console.log("No hay usuario autenticado");
+      document.getElementById("admin-modal").classList.remove("active");
+    }
+  });
+
+  // Vincular eventos de admin
   const adminLink = document.getElementById("admin-link");
   const adminLinkMobile = document.getElementById("admin-link-mobile");
   
-  if (!adminLink) {
-    console.error("Elemento con ID 'admin-link' no encontrado");
-  } else {
-    console.log("Elemento 'admin-link' encontrado, vinculando evento...");
+  if (adminLink) {
     adminLink.addEventListener("click", (e) => {
       e.preventDefault();
       console.log("Botón Admin clicado (escritorio)");
-      mostrarPromptClave();
+      if (auth.currentUser) {
+        document.getElementById("admin-modal").classList.add("active");
+        mostrarTurnosAdmin();
+      } else {
+        mostrarPromptClave();
+      }
     });
+  } else {
+    console.error("Elemento con ID 'admin-link' no encontrado");
   }
 
-  if (!adminLinkMobile) {
-    console.error("Elemento con ID 'admin-link-mobile' no encontrado");
-  } else {
-    console.log("Elemento 'admin-link-mobile' encontrado, vinculando evento...");
+  if (adminLinkMobile) {
     adminLinkMobile.addEventListener("click", (e) => {
       e.preventDefault();
       console.log("Botón Admin móvil clicado");
-      mostrarPromptClave();
+      if (auth.currentUser) {
+        document.getElementById("admin-modal").classList.add("active");
+        mostrarTurnosAdmin();
+      } else {
+        mostrarPromptClave();
+      }
     });
+  } else {
+    console.error("Elemento con ID 'admin-link-mobile' no encontrado");
   }
 
   const fechaInput = document.getElementById("fecha");
@@ -1102,34 +1123,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Vincular botones de administración
   const generarTurnosBtn = document.getElementById("generarTurnos");
-  const refreshTurnosBtn = document.getElementById("refreshTurnos");
   const exportTurnosBtn = document.getElementById("exportTurnos");
-  const importTurnosBtn = document.getElementById("importTurnos");
   const logoutBtn = document.getElementById("logout");
   const closeModalBtn = document.querySelector("#admin-modal .close-modal");
   const fechaGenerarInput = document.getElementById("fechaGenerar");
-
-  // Añadir campo fechaFiltro dinámicamente si no existe
-  let fechaFiltroInput = document.getElementById("fechaFiltro");
-  if (!fechaFiltroInput) {
-    const filterDiv = document.createElement("div");
-    filterDiv.className = "mb-4";
-    filterDiv.innerHTML = `
-      <label for="fechaFiltro" class="block text-sm font-medium mb-2 text-gray-200 font-['Poppins']"><i class="fas fa-calendar-check mr-2 text-yellow-400"></i>Filtrar Turnos por Fecha:</label>
-      <input type="date" id="fechaFiltro" class="w-full p-3 border border-gray-600 rounded-lg bg-gray-900 text-gray-200 focus:outline-none focus:ring-2 focus:ring-yellow-400">
-    `;
-    const modalContent = document.querySelector("#admin-modal .modal-content");
-    const actionBar = document.querySelector("#admin-modal .action-bar");
-    if (modalContent && actionBar) {
-      modalContent.insertBefore(filterDiv, actionBar.nextSibling);
-    }
-    fechaFiltroInput = document.getElementById("fechaFiltro");
-  }
+  const fechaFiltroInput = document.getElementById("fechaFiltro");
 
   if (generarTurnosBtn) generarTurnosBtn.addEventListener("click", generarTurnos);
-  if (refreshTurnosBtn) refreshTurnosBtn.addEventListener("click", () => mostrarTurnosAdmin());
   if (exportTurnosBtn) exportTurnosBtn.addEventListener("click", exportTurnos);
-  if (importTurnosBtn) importTurnosBtn.addEventListener("click", importTurnos);
   if (logoutBtn) logoutBtn.addEventListener("click", logout);
   if (closeModalBtn) {
     closeModalBtn.addEventListener("click", () => {

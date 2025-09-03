@@ -12,6 +12,9 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
+// Habilitar modo de depuración de Firestore para ver detalles de errores
+firebase.firestore.setLogLevel('debug');
+
 // Horarios
 const horariosManana = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30"];
 const horariosTarde = ["15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30"];
@@ -58,14 +61,16 @@ function formatDateToISO(date) {
 // Obtener turnos desde Firestore
 async function obtenerTurnos() {
   try {
+    console.log("Obteniendo turnos...");
     const querySnapshot = await db.collection("turnos").get();
     const turnos = [];
     querySnapshot.forEach((doc) => {
       turnos.push({ id: doc.id, ...doc.data() });
     });
+    console.log("Turnos obtenidos:", turnos);
     return turnos;
   } catch (error) {
-    console.error("Error al obtener turnos: ", error);
+    console.error("Error al obtener turnos: ", error.code, error.message);
     Swal.fire({
       icon: "error",
       title: "Error",
@@ -78,6 +83,7 @@ async function obtenerTurnos() {
 
 // Escuchar turnos en tiempo real
 function escucharTurnos(callback, selectedDate = "") {
+  console.log("Iniciando escucha de turnos para fecha:", selectedDate);
   let query = db.collection("turnos");
   if (selectedDate) {
     const formattedSelectedDate = formatDate(selectedDate);
@@ -91,7 +97,7 @@ function escucharTurnos(callback, selectedDate = "") {
     });
     callback(turnos);
   }, (error) => {
-    console.error("Error al escuchar turnos: ", error);
+    console.error("Error al escuchar turnos: ", error.code, error.message);
     Swal.fire({
       icon: "error",
       title: "Error",
@@ -104,10 +110,11 @@ function escucharTurnos(callback, selectedDate = "") {
 // Guardar turno en Firestore
 async function guardarTurno(turno) {
   try {
+    console.log("Guardando turno:", turno);
     const docRef = await db.collection("turnos").add(turno);
     console.log("Turno guardado con ID: ", docRef.id);
   } catch (error) {
-    console.error("Error al guardar turno: ", error);
+    console.error("Error al guardar turno: ", error.code, error.message);
     Swal.fire({
       icon: "error",
       title: "Error",
@@ -378,7 +385,6 @@ async function logout() {
 // Mostrar prompt de login para administrador
 function mostrarPromptClave() {
   console.log("Mostrando prompt de login");
-  // Ocultar el admin-modal antes de mostrar el prompt
   document.getElementById("admin-modal").classList.remove("active");
   Swal.fire({
     title: "Acceso Administrativo",
@@ -453,7 +459,6 @@ function mostrarPromptClave() {
       const { email, password } = result.value;
       login(email, password);
     } else {
-      // Asegurarse de que el admin-modal no se muestre si se cancela el login
       document.getElementById("admin-modal").classList.remove("active");
     }
   }).catch((error) => {
@@ -491,7 +496,6 @@ async function handleToggleDisponible(id, currentDisponible) {
   }
   const nuevoEstado = currentDisponible === "Sí" ? "No" : "Sí";
   if (nuevoEstado === "No") {
-    // Si marcamos como no disponible, pedimos nombre y teléfono
     Swal.fire({
       title: "Marcar como No Disponible",
       html: `
@@ -530,7 +534,6 @@ async function handleToggleDisponible(id, currentDisponible) {
       }
     });
   } else {
-    // Si marcamos como disponible, no se necesitan nombre ni teléfono
     await updateTurno(id, nuevoEstado);
   }
 }
@@ -657,7 +660,6 @@ async function handleEditTurno(id, currentFecha, currentHora, currentNombre, cur
             throw new Error("El turno no existe");
           }
 
-          // Si la fecha u hora cambió, crear un nuevo turno disponible en la fecha/hora original
           if (fecha !== originalFecha || hora !== originalHora) {
             const originalTurnoExists = (await db.collection("turnos")
               .where("fecha", "==", originalFecha)
@@ -676,7 +678,6 @@ async function handleEditTurno(id, currentFecha, currentHora, currentNombre, cur
             }
           }
 
-          // Actualizar el turno existente con los nuevos datos
           transaction.update(turnoRef, {
             fecha: fecha,
             hora: hora,
@@ -842,11 +843,9 @@ function mostrarTurnosAdmin(selectedDate = "") {
     const lista = document.getElementById("listaTurnosAdmin");
     const listaMobile = document.getElementById("turnos-mobile");
     
-    // Limpiar ambos contenedores
     lista.innerHTML = "";
     listaMobile.innerHTML = "";
 
-    // Verificar si es pantalla móvil
     const isMobile = window.innerWidth <= 640;
 
     if (turnos.length === 0) {
@@ -877,7 +876,6 @@ function mostrarTurnosAdmin(selectedDate = "") {
       const estado = disponible === "Sí" ? '<span style="color: #10b981;">Disponible</span>' : nombre ? '<span style="color: #facc15;">Reservado</span>' : '<span style="color: #e3342f;">No Disponible</span>';
 
       if (!isMobile) {
-        // Renderizar en la tabla (escritorio)
         const row = document.createElement("tr");
         row.innerHTML = `
           <td>${fecha}</td>
@@ -898,7 +896,6 @@ function mostrarTurnosAdmin(selectedDate = "") {
         `;
         lista.appendChild(row);
       } else {
-        // Renderizar en tarjetas (móviles)
         const card = document.createElement("div");
         card.className = "turno-card";
         card.innerHTML = `
@@ -964,6 +961,7 @@ async function updateTimeSlots() {
 
   const formattedSelectedDate = formatDate(selectedDate);
   try {
+    console.log("Consultando turnos disponibles para:", formattedSelectedDate);
     const querySnapshot = await db.collection("turnos")
       .where("fecha", "==", formattedSelectedDate)
       .where("Disponible", "==", "Sí")
@@ -973,6 +971,7 @@ async function updateTimeSlots() {
       disponibles.push(doc.data());
     });
 
+    console.log("Turnos disponibles encontrados:", disponibles);
     disponibles.sort((a, b) => a.hora.localeCompare(b.hora));
 
     disponibles.forEach((t) => {
@@ -988,7 +987,7 @@ async function updateTimeSlots() {
       horaSelect.disabled = true;
     }
   } catch (error) {
-    console.error("Error al cargar horarios disponibles: ", error);
+    console.error("Error al cargar horarios disponibles: ", error.code, error.message);
     Swal.fire({
       icon: "error",
       title: "Error",
@@ -1001,12 +1000,35 @@ async function updateTimeSlots() {
 // Manejar reserva de turno con transacción
 async function reservarTurno(event) {
   event.preventDefault();
+  console.log("Iniciando reservarTurno...");
+
+  // Verificar autenticación
+  if (!auth.currentUser) {
+    console.error("Usuario no autenticado. Intentando autenticación anónima...");
+    try {
+      await auth.signInAnonymously();
+      console.log("Autenticación anónima exitosa:", auth.currentUser.uid);
+    } catch (error) {
+      console.error("Error en autenticación anónima:", error.code, error.message);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudo autenticar al usuario. Inténtalo de nuevo.",
+        confirmButtonColor: "#facc15"
+      });
+      return;
+    }
+  }
+
+  console.log("Usuario autenticado:", auth.currentUser.uid, "Es anónimo:", auth.currentUser.isAnonymous);
+
   const nombre = document.getElementById("nombre").value;
   const telefono = document.getElementById("telefono").value;
   const fecha = document.getElementById("fecha").value;
   const hora = document.getElementById("hora").value;
 
   if (!fecha || !hora || !nombre || !telefono) {
+    console.error("Faltan datos en el formulario:", { fecha, hora, nombre, telefono });
     Swal.fire({
       icon: "warning",
       title: "Faltan datos",
@@ -1018,6 +1040,7 @@ async function reservarTurno(event) {
 
   const parsedDate = parseDMY(fecha);
   if (!parsedDate || isNaN(parsedDate)) {
+    console.error("Fecha inválida:", fecha);
     Swal.fire({
       icon: "warning",
       title: "Fecha inválida",
@@ -1028,8 +1051,11 @@ async function reservarTurno(event) {
   }
 
   const formattedDate = formatDate(fecha);
+  console.log("Intentando reservar turno:", { nombre, telefono, fecha: formattedDate, hora });
+
   try {
     await db.runTransaction(async (transaction) => {
+      console.log("Iniciando transacción para fecha:", formattedDate, "hora:", hora);
       const querySnapshot = await db.collection("turnos")
         .where("fecha", "==", formattedDate)
         .where("hora", "==", hora)
@@ -1037,33 +1063,36 @@ async function reservarTurno(event) {
         .get();
 
       if (querySnapshot.empty) {
+        console.error("No se encontró turno disponible para:", formattedDate, hora);
         throw new Error("El turno ya no está disponible o no existe.");
       }
 
       const turnoDoc = querySnapshot.docs[0];
       const turnoId = turnoDoc.id;
+      const turnoData = turnoDoc.data();
+      console.log("Turno encontrado, ID:", turnoId, "Datos:", turnoData);
 
-      // Verificar nuevamente que el turno esté disponible
       const turnoRef = db.collection("turnos").doc(turnoId);
       const turnoSnap = await transaction.get(turnoRef);
       if (!turnoSnap.exists) {
+        console.error("El turno no existe en la transacción, ID:", turnoId);
         throw new Error("El turno no existe.");
       }
       if (turnoSnap.data().Disponible !== "Sí") {
+        console.error("El turno ya no está disponible, ID:", turnoId, "Estado:", turnoSnap.data().Disponible);
         throw new Error("El turno ya fue reservado.");
       }
 
-      // Actualizar el turno
+      console.log("Actualizando turno con ID:", turnoId);
       transaction.update(turnoRef, {
         nombre: nombre,
         telefono: telefono,
         Disponible: "No",
         fechaReserva: firebase.firestore.FieldValue.serverTimestamp()
       });
-      console.log("Turno reservado con éxito, ID:", turnoId);
+      console.log("Transacción completada para turno ID:", turnoId);
     });
 
-    // Mostrar mensaje de confirmación detallado
     Swal.fire({
       icon: "success",
       title: "¡Reserva Confirmada!",
@@ -1081,12 +1110,10 @@ async function reservarTurno(event) {
       cancelButtonColor: "#e3342f"
     }).then((result) => {
       if (result.isConfirmed) {
-        // Enviar mensaje de WhatsApp al confirmar
         enviarMensajeWhatsapp(nombre, formattedDate, hora);
       }
     });
 
-    // Resetear el formulario
     document.getElementById("reserva-form").reset();
     document.getElementById("fecha").value = "";
     document.getElementById("hora").innerHTML = '<option value="" disabled selected>Selecciona una hora</option>';
@@ -1100,47 +1127,54 @@ async function reservarTurno(event) {
       text: error.message || "No se pudo reservar el turno. Inténtalo de nuevo.",
       confirmButtonColor: "#facc15"
     });
-    // Refrescar la lista de horarios disponibles
     await updateTimeSlots();
   }
 }
 
 // Enviar mensaje de WhatsApp
 function enviarMensajeWhatsapp(nombre, fecha, hora) {
-  const telefono = "5493471234567"; // Número de destino (código de país + número)
+  const telefono = "5493471234567";
   const mensaje = `Hola, soy ${nombre}. Confirmo mi turno reservado para el ${fecha} a las ${hora}. Por favor, confirmar recepción.`;
   const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
-  window.open(url, "_blank"); // Abre WhatsApp Web o app móvil
   console.log("Abriendo WhatsApp con mensaje:", mensaje);
+  window.open(url, "_blank");
 }
 
 // Inicializar eventos y restricciones de fecha
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   console.log("DOM completamente cargado");
 
-  // Habilitar modo de depuración de Firestore (opcional, coméntalo si no lo necesitas)
-  // firebase.firestore.setLogLevel('debug');
-
-  // Autenticar anónimamente a los clientes para reservas
-  auth.signInAnonymously().catch((error) => {
-    console.error("Error en autenticación anónima: ", error);
+  // Esperar a que la autenticación anónima se complete
+  try {
+    await new Promise((resolve, reject) => {
+      const unsubscribe = auth.onAuthStateChanged((user) => {
+        if (user) {
+          console.log("Usuario autenticado al cargar:", user.uid, "Es anónimo:", user.isAnonymous);
+          unsubscribe();
+          resolve();
+        } else {
+          console.log("No hay usuario autenticado, intentando autenticación anónima...");
+          auth.signInAnonymously().then(() => {
+            console.log("Autenticación anónima exitosa");
+            unsubscribe();
+            resolve();
+          }).catch((error) => {
+            console.error("Error en autenticación anónima:", error.code, error.message);
+            unsubscribe();
+            reject(error);
+          });
+        }
+      });
+    });
+  } catch (error) {
+    console.error("Error al inicializar autenticación:", error);
     Swal.fire({
       icon: "error",
       title: "Error",
       text: "No se pudo autenticar al usuario. Inténtalo de nuevo.",
       confirmButtonColor: "#facc15"
     });
-  });
-
-  // Verificar autenticación al cargar la página y asegurar que el modal esté cerrado si no hay usuario
-  auth.onAuthStateChanged((user) => {
-    if (user) {
-      console.log("Usuario autenticado:", user.email || "Anónimo", "Es anónimo:", user.isAnonymous);
-    } else {
-      console.log("No hay usuario autenticado");
-      document.getElementById("admin-modal").classList.remove("active");
-    }
-  });
+  }
 
   // Vincular eventos de admin
   const adminLink = document.getElementById("admin-link");
@@ -1220,7 +1254,6 @@ document.addEventListener("DOMContentLoaded", () => {
     horaSelect.disabled = true;
   }
 
-  // Vincular botones de administración
   const generarTurnosBtn = document.getElementById("generarTurnos");
   const exportTurnosBtn = document.getElementById("exportTurnos");
   const logoutBtn = document.getElementById("logout");
@@ -1243,13 +1276,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Vincular formulario de reserva
   const reservaForm = document.getElementById("reserva-form");
   if (reservaForm) {
     reservaForm.addEventListener("submit", reservarTurno);
   }
 
-  // Toggle menú móvil
   const menuToggle = document.querySelector(".menu-toggle");
   const mobileMenu = document.getElementById("mobile-menu");
   if (menuToggle && mobileMenu) {
@@ -1260,7 +1291,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Cerrar menú móvil al hacer clic en un enlace
   document.querySelectorAll("#mobile-menu a").forEach((link) => {
     link.addEventListener("click", () => {
       mobileMenu.classList.add("hidden");
@@ -1269,7 +1299,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Manejar cambios de tamaño de pantalla
   window.addEventListener("resize", () => {
     const fechaFiltroInput = document.getElementById("fechaFiltro");
     const selectedDate = fechaFiltroInput ? fechaFiltroInput.value : "";

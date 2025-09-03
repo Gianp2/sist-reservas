@@ -1063,15 +1063,30 @@ async function reservarTurno(event) {
       console.log("Turno reservado con éxito, ID:", turnoId);
     });
 
+    // Mostrar mensaje de confirmación detallado
     Swal.fire({
       icon: "success",
-      title: "Turno reservado",
-      text: "Tu turno ha sido reservado con éxito. Ahora puedes confirmar por WhatsApp.",
-      timer: 2000,
-      showConfirmButton: false
+      title: "¡Reserva Confirmada!",
+      html: `
+        <p>Tu turno ha sido reservado con éxito.</p>
+        <p><strong>Nombre:</strong> ${nombre}</p>
+        <p><strong>Fecha:</strong> ${formattedDate}</p>
+        <p><strong>Hora:</strong> ${hora}</p>
+        <p>Por favor, confirma tu turno enviando el mensaje por WhatsApp.</p>
+      `,
+      confirmButtonText: "Enviar Confirmación por WhatsApp",
+      confirmButtonColor: "#facc15",
+      showCancelButton: true,
+      cancelButtonText: "Cerrar",
+      cancelButtonColor: "#e3342f"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Enviar mensaje de WhatsApp al confirmar
+        enviarMensajeWhatsapp(nombre, formattedDate, hora);
+      }
     });
-    // Enviar mensaje de WhatsApp
-    enviarMensajeWhatsapp(nombre, formattedDate, hora);
+
+    // Resetear el formulario
     document.getElementById("reserva-form").reset();
     document.getElementById("fecha").value = "";
     document.getElementById("hora").innerHTML = '<option value="" disabled selected>Selecciona una hora</option>';
@@ -1093,7 +1108,7 @@ async function reservarTurno(event) {
 // Enviar mensaje de WhatsApp
 function enviarMensajeWhatsapp(nombre, fecha, hora) {
   const telefono = "5493471234567"; // Número de destino (código de país + número)
-  const mensaje = `Hola, soy ${nombre}. Quiero confirmar mi turno para el ${fecha} a las ${hora}.`;
+  const mensaje = `Hola, soy ${nombre}. Confirmo mi turno reservado para el ${fecha} a las ${hora}. Por favor, confirmar recepción.`;
   const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
   window.open(url, "_blank"); // Abre WhatsApp Web o app móvil
   console.log("Abriendo WhatsApp con mensaje:", mensaje);

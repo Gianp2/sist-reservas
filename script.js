@@ -119,6 +119,16 @@ async function guardarTurno(turno) {
 
 // Generar turnos para una fecha específica
 async function generarTurnos() {
+  if (!auth.currentUser || auth.currentUser.isAnonymous) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Debes iniciar sesión como administrador para generar turnos.",
+      confirmButtonColor: "#facc15"
+    });
+    return;
+  }
+
   const fechaGenerar = document.getElementById("fechaGenerar").value;
   if (!fechaGenerar) {
     Swal.fire({
@@ -196,6 +206,16 @@ async function generarTurnos() {
 
 // Eliminar turno
 async function deleteTurno(id) {
+  if (!auth.currentUser || auth.currentUser.isAnonymous) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Debes iniciar sesión como administrador para realizar esta acción.",
+      confirmButtonColor: "#facc15"
+    });
+    return;
+  }
+
   if (!id) {
     console.error("ID de turno inválido o no proporcionado:", id);
     Swal.fire({
@@ -242,6 +262,16 @@ async function deleteTurno(id) {
 
 // Actualizar turno
 async function updateTurno(id, disponible, nombre = "", telefono = "") {
+  if (!auth.currentUser || auth.currentUser.isAnonymous) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Debes iniciar sesión como administrador para realizar esta acción.",
+      confirmButtonColor: "#facc15"
+    });
+    return;
+  }
+
   if (!id) {
     console.error("ID de turno inválido en updateTurno:", id);
     Swal.fire({
@@ -439,6 +469,16 @@ function mostrarPromptClave() {
 
 // Manejar toggle disponible
 async function handleToggleDisponible(id, currentDisponible) {
+  if (!auth.currentUser || auth.currentUser.isAnonymous) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Debes iniciar sesión como administrador para realizar esta acción.",
+      confirmButtonColor: "#facc15"
+    });
+    return;
+  }
+
   if (!id) {
     console.error("ID de turno inválido en handleToggleDisponible:", id);
     Swal.fire({
@@ -497,6 +537,16 @@ async function handleToggleDisponible(id, currentDisponible) {
 
 // Manejar edición de nombre
 async function handleEditName(id, currentName, currentDisponible) {
+  if (!auth.currentUser || auth.currentUser.isAnonymous) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Debes iniciar sesión como administrador para realizar esta acción.",
+      confirmButtonColor: "#facc15"
+    });
+    return;
+  }
+
   Swal.fire({
     title: "Editar Nombre del Cliente",
     input: "text",
@@ -522,6 +572,16 @@ async function handleEditName(id, currentName, currentDisponible) {
 
 // Manejar edición de turno
 async function handleEditTurno(id, currentFecha, currentHora, currentNombre, currentTelefono, currentDisponible) {
+  if (!auth.currentUser || auth.currentUser.isAnonymous) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Debes iniciar sesión como administrador para realizar esta acción.",
+      confirmButtonColor: "#facc15"
+    });
+    return;
+  }
+
   Swal.fire({
     title: "Editar Turno",
     html: `
@@ -649,6 +709,16 @@ async function handleEditTurno(id, currentFecha, currentHora, currentNombre, cur
 
 // Manejar eliminación de turno
 async function handleDeleteTurno(id) {
+  if (!auth.currentUser || auth.currentUser.isAnonymous) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Debes iniciar sesión como administrador para realizar esta acción.",
+      confirmButtonColor: "#facc15"
+    });
+    return;
+  }
+
   if (!id) {
     console.error("ID de turno inválido en handleDeleteTurno:", id);
     Swal.fire({
@@ -1033,10 +1103,24 @@ function enviarMensajeWhatsapp(nombre, fecha, hora) {
 document.addEventListener("DOMContentLoaded", () => {
   console.log("DOM completamente cargado");
 
+  // Habilitar modo de depuración de Firestore (opcional, coméntalo si no lo necesitas)
+  // firebase.firestore.setLogLevel('debug');
+
+  // Autenticar anónimamente a los clientes para reservas
+  auth.signInAnonymously().catch((error) => {
+    console.error("Error en autenticación anónima: ", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "No se pudo autenticar al usuario. Inténtalo de nuevo.",
+      confirmButtonColor: "#facc15"
+    });
+  });
+
   // Verificar autenticación al cargar la página y asegurar que el modal esté cerrado si no hay usuario
   auth.onAuthStateChanged((user) => {
     if (user) {
-      console.log("Usuario autenticado:", user.email);
+      console.log("Usuario autenticado:", user.email || "Anónimo", "Es anónimo:", user.isAnonymous);
     } else {
       console.log("No hay usuario autenticado");
       document.getElementById("admin-modal").classList.remove("active");
@@ -1051,7 +1135,7 @@ document.addEventListener("DOMContentLoaded", () => {
     adminLink.addEventListener("click", (e) => {
       e.preventDefault();
       console.log("Botón Admin clicado (escritorio)");
-      if (auth.currentUser) {
+      if (auth.currentUser && !auth.currentUser.isAnonymous) {
         document.getElementById("admin-modal").classList.add("active");
         mostrarTurnosAdmin();
       } else {
@@ -1066,7 +1150,7 @@ document.addEventListener("DOMContentLoaded", () => {
     adminLinkMobile.addEventListener("click", (e) => {
       e.preventDefault();
       console.log("Botón Admin móvil clicado");
-      if (auth.currentUser) {
+      if (auth.currentUser && !auth.currentUser.isAnonymous) {
         document.getElementById("admin-modal").classList.add("active");
         mostrarTurnosAdmin();
       } else {

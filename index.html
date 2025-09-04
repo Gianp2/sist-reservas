@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Barbería - Cortes y Afeitados en XXXX</title>
+  <title>Barbería - Cortes y Afeitados en Las Parejas</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="icon" href="img/logo-barber.png" type="image/png">
@@ -15,7 +15,7 @@
     }
     .hero-section {
       height: 100vh;
-      background-image: url('hero.jpg');
+      background-image: url('img/hero.jpg');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -34,42 +34,88 @@
     }
     #scroll-top-btn {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: #facc15;
+      bottom: 30px;
+      right: 30px;
+      background: linear-gradient(135deg, #facc15, #eab308);
       color: #1f2937;
-      padding: 12px;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       border-radius: 50%;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-      transition: opacity 0.3s ease, transform 0.3s ease;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       opacity: 0;
       transform: translateY(20px);
+      z-index: 100;
     }
     #scroll-top-btn.visible {
       opacity: 1;
       transform: translateY(0);
     }
     #scroll-top-btn:hover {
-      background-color: #eab308;
+      transform: translateY(-2px) scale(1.1);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+      animation: pulse 0.5s ease-in-out;
+    }
+    #scroll-top-btn::after {
+      content: 'Volver arriba';
+      position: absolute;
+      bottom: 60px;
+      right: -10px;
+      background-color: #1f2937;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+    #scroll-top-btn:hover::after {
+      opacity: 1;
+    }
+    @keyframes pulse {
+      0% { transform: translateY(-2px) scale(1.1); }
+      50% { transform: translateY(-2px) scale(1.15); }
+      100% { transform: translateY(-2px) scale(1.1); }
     }
     html {
       scroll-behavior: smooth;
     }
     section[id] {
-      scroll-margin-top: 80px;
+      scroll-margin-top: 100px;
     }
-    /* Estilos para el menú hamburguesa */
-    .hamburger-menu {
+    /* Navigation and Sidebar Link Styles */
+    .nav-link {
+      position: relative;
+      transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease-in-out;
+    }
+    .nav-link:hover {
+      color: #facc15;
+      transform: translateY(-2px);
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: #facc15;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    /* Sidebar styles */
+    .sidebar {
       display: none;
     }
     @media (max-width: 768px) {
-      .hamburger-menu {
-        display: block;
-      }
-      .nav-links {
-        display: none;
-      }
-      .nav-links.active {
+      .sidebar {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -86,40 +132,49 @@
         transition: transform 0.3s ease-in-out;
         transform: translateX(100%);
       }
-      .nav-links.active.show {
+      .sidebar.active {
         transform: translateX(0);
       }
-      .nav-links a {
+      .sidebar a {
         margin: 1.5rem 0;
         font-size: 1.25rem;
         text-align: center;
         width: 100%;
         padding: 0.75rem;
         border-radius: 0.375rem;
-        transition: background-color 0.3s ease;
-      }
-      .nav-links a:hover {
-        background-color: #374151;
-      }
-      .nav-links .reserve-btn {
-        background-color: #facc15;
-        color: #1f2937;
-        font-weight: 600;
-        padding: 0.75rem 1.5rem;
-        border-radius: 9999px;
-        width: auto;
-      }
-      .nav-links .reserve-btn:hover {
-        background-color: #eab308;
-      }
-      .close-btn {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        font-size: 1.5rem;
+        transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease-in-out, color 0.3s ease-in-out;
         color: white;
-        cursor: pointer;
       }
+      .sidebar a:hover {
+        background-color: #374151;
+        transform: scale(1.05);
+        color: #facc15;
+      }
+      .hamburger-menu {
+        display: block;
+      }
+    }
+    .hero-text {
+      animation: fadeInUp 1.2s ease-out;
+    }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    /* Hero Button Styles */
+    .hero-btn {
+      transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+    }
+    .hero-btn:hover {
+      background-color: #eab308;
+      transform: scale(1.05);
+      filter: brightness(1.1);
     }
   </style>
 </head>
@@ -127,25 +182,34 @@
   <!-- Navigation -->
   <nav class="fixed top-0 left-0 w-full bg-gray-900 text-white py-4 z-50 shadow-lg">
     <div class="container mx-auto px-4 flex justify-between items-center">
-      <h1 class="text-2xl font-bold">Barber Studio</h1>
+      <div class="flex items-center">
+        <img src="img/logo-barber.png" alt="Logo" class="h-10 w-10 mr-2">
+        <h1 class="text-2xl font-bold">Barber Studio</h1>
+      </div>
       <div class="hamburger-menu md:hidden">
         <i class="fas fa-bars text-2xl cursor-pointer"></i>
       </div>
-      <div class="nav-links space-x-4 md:flex">
-        <a href="#servicios" class="hover:text-yellow-400 transition duration-300">Servicios</a>
-        <a href="#sobre-nosotros" class="hover:text-yellow-400 transition duration-300">Sobre Nosotros</a>
-        <a href="reservas.html" class="reserve-btn bg-yellow-400 text-gray-900 font-semibold py-2 px-4 rounded-full hover:bg-yellow-500 transition duration-300">Reservar</a>
-        <span class="close-btn md:hidden">&times;</span>
+      <div class="hidden md:flex space-x-6 items-center">
+        <a href="#servicios" class="nav-link relative text-lg font-medium">Servicios</a>
+        <a href="#sobre-nosotros" class="nav-link relative text-lg font-medium">Sobre Nosotros</a>
+        <a href="#contacto" class="nav-link relative text-lg font-medium">Contacto</a>
       </div>
+    </div>
+    <!-- Sidebar -->
+    <div class="sidebar md:hidden">
+      <span class="close-btn text-2xl cursor-pointer text-white mb-8">&times;</span>
+      <a href="#servicios" class="nav-link relative">Servicios</a>
+      <a href="#sobre-nosotros" class="nav-link relative">Sobre Nosotros</a>
+      <a href="#contacto" class="nav-link relative">Contacto</a>
     </div>
   </nav>
 
   <!-- Hero Section -->
   <section class="hero-section flex items-center justify-center text-center text-white bg-cover bg-center" style="background-image: url('img/hero.jpg')" data-aos="fade-down" data-aos-duration="1000">
-    <div class="bg-black bg-opacity-50 p-8 rounded-lg">
-      <h2 class="text-4xl md:text-6xl font-bold mb-4">Bienvenido a Tu Barbería</h2>
-      <p class="text-lg md:text-2xl mb-8">Cortes de pelo, afeitados y estilo con un servicio de primera calidad.</p>
-      <a href="reservas.html" class="bg-yellow-400 text-gray-900 font-semibold py-3 px-8 rounded-full hover:bg-yellow-500 transition duration-300 shadow-lg">Reserva tu turno!</a>
+    <div class="bg-black bg-opacity-60 p-10 md:p-16 rounded-xl max-w-3xl mx-4">
+      <h2 class="text-4xl md:text-6xl font-bold mb-6 hero-text">Bienvenido a Tu Barbería</h2>
+      <p class="text-lg md:text-2xl mb-8 hero-text">Cortes de pelo, afeitados y estilo con un servicio de primera calidad. ¡Contáctanos para transformar tu look!</p>
+      <a href="#contacto" class="hero-btn inline-block bg-yellow-400 text-gray-900 font-semibold py-3 px-8 rounded-full shadow-lg hero-text">Contáctanos Ahora</a>
     </div>
   </section>
 
@@ -182,7 +246,7 @@
   <section id="sobre-nosotros" class="py-16 bg-gray-100" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="100">
     <div class="container mx-auto px-4">
       <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Sobre Nosotros</h2>
-      <p class="text-lg md:text-xl text-center mb-8 max-w-3xl mx-auto">En Tu Barbería, ofrecemos una experiencia única en XXXX. Somos especialistas en cortes de pelo para hombres, afeitados y coloración, siempre con un enfoque personalizado y productos de alta calidad.</p>
+      <p class="text-lg md:text-xl text-center mb-8 max-w-3xl mx-auto">En Tu Barbería, ofrecemos una experiencia única en Las Parejas. Somos especialistas en cortes de pelo para hombres, afeitados y coloración, siempre con un enfoque personalizado y productos de alta calidad.</p>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         <div class="feature-card bg-white p-6 rounded-lg shadow-md text-center" data-aos="fade-up" data-aos-delay="200">
           <i class="fas fa-star text-yellow-400 text-3xl mb-4"></i>
@@ -220,31 +284,80 @@
     </div>
   </section>
 
-  <!-- Footer: Sección centrada para todas las vistas, con direcciones mejoradas y centradas -->
+  <!-- Contacto -->
+  <section id="contacto" class="py-16 bg-gray-100" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="100">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-12">Conoce a Nuestros Barberos</h2>
+      <p class="text-lg md:text-xl mb-8 max-w-3xl mx-auto">Nuestro equipo de profesionales está listo para ofrecerte un servicio personalizado. ¡Contáctalos directamente para reservar tu turno!</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="feature-card bg-white p-6 rounded-lg shadow-md text-center hover:bg-gray-100 transition duration-300" data-aos="fade-up" data-aos-delay="200">
+          <img src="img/barbero1.jpg" alt="Barbero Juan Pérez" class="mx-auto mb-4 rounded-full w-32 h-32 object-cover">
+          <h3 class="text-xl font-semibold mb-2">Juan Pérez</h3>
+          <p class="text-gray-600 mb-4">Especialista en cortes clásicos y skin fades con más de 10 años de experiencia. Apasionado por crear estilos que resalten tu personalidad.</p>
+          <div class="flex justify-center space-x-4">
+            <a href="https://wa.me/+1234567890" target="_blank" aria-label="Contacta a Juan por WhatsApp">
+              <img src="img/wpp.png" alt="WhatsApp Icon" class="h-8 w-8 hover:opacity-80 transition-opacity">
+            </a>
+            <a href="https://instagram.com/juanperezbarber" target="_blank" aria-label="Síguenos en Instagram">
+              <img src="img/insta.png" alt="Instagram Icon" class="h-8 w-8 hover:opacity-80 transition-opacity">
+            </a>
+          </div>
+        </div>
+        <div class="feature-card bg-white p-6 rounded-lg shadow-md text-center hover:bg-gray-100 transition duration-300" data-aos="fade-up" data-aos-delay="300">
+          <img src="img/barbero2.jpg" alt="Barbero Martín Gómez" class="mx-auto mb-4 rounded-full w-32 h-32 object-cover">
+          <h3 class="text-xl font-semibold mb-2">Martín Gómez</h3>
+          <p class="text-gray-600 mb-4">Experto en afeitados de barba y diseños modernos. Con 8 años en el rubro, Martín combina técnica y creatividad para un look impecable.</p>
+          <div class="flex justify-center space-x-4">
+            <a href="https://wa.me/+1234567891" target="_blank" aria-label="Contacta a Martín por WhatsApp">
+              <img src="img/wpp.png" alt="WhatsApp Icon" class="h-8 w-8 hover:opacity-80 transition-opacity">
+            </a>
+            <a href="https://instagram.com/martingomezbarber" target="_blank" aria-label="Síguenos en Instagram">
+              <img src="img/insta.png" alt="Instagram Icon" class="h-8 w-8 hover:opacity-80 transition-opacity">
+            </a>
+          </div>
+        </div>
+        <div class="feature-card bg-white p-6 rounded-lg shadow-md text-center hover:bg-gray-100 transition duration-300" data-aos="fade-up" data-aos-delay="400">
+          <img src="img/barbero3.jpg" alt="Barbero Carlos López" class="mx-auto mb-4 rounded-full w-32 h-32 object-cover">
+          <h3 class="text-xl font-semibold mb-2">Carlos López</h3>
+          <p class="text-gray-600 mb-4">Maestro en tintes y mechas, con 12 años de experiencia. Carlos se especializa en transformaciones de color y cuidado del cabello.</p>
+          <div class="flex justify-center space-x-4">
+            <a href="https://wa.me/+1234567892" target="_blank" aria-label="Contacta a Carlos por WhatsApp">
+              <img src="img/wpp.png" alt="WhatsApp Icon" class="h-8 w-8 hover:opacity-80 transition-opacity">
+            </a>
+            <a href="https://instagram.com/carloslopezbarber" target="_blank" aria-label="Síguenos en Instagram">
+              <img src="img/insta.png" alt="Instagram Icon" class="h-8 w-8 hover:opacity-80 transition-opacity">
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
   <footer class="bg-gray-800 text-white py-12" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="100">
     <div class="container mx-auto px-4">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="text-center">
-          <h3 class="text-xl font-semibold mb-4 text-yellow-500">Tu Barberia</h3>
+          <h3 class="text-xl font-semibold mb-4 text-yellow-500">Tu Barbería</h3>
           <p class="font-semibold text-lg mb-2">Las Parejas, Sta. Fe.</p>
           <p class="font-semibold text-lg mb-2">Calle 12, 3456</p>
           <p class="mt-2 text-sm max-w-xs mx-auto">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aspernatur quas voluptatibus nisi sed odio, odit delectus. Inventore aperiam provident nemo voluptatum quis natus optio distinctio voluptates obcaecati, exercitationem, expedita eos.</p>
         </div>
         <div class="text-center">
           <h3 class="text-xl font-semibold mb-4 text-yellow-500">Enlaces Rápidos</h3>
-          <p><a href="#servicios" class="hover:text-yellow-400 transition duration-300">Servicios</a></p>
+          <p><a href="#servicios" class="nav-link relative">Servicios</a></p>
           <br>
-          <p><a href="#sobre-nosotros" class="hover:text-yellow-400 transition duration-300">Sobre Nosotros</a></p>
+          <p><a href="#sobre-nosotros" class="nav-link relative">Sobre Nosotros</a></p>
           <br>
-          <p><a href="reservas.html" class="hover:text-yellow-400 transition duration-300">Reservar</a></p>
+          <p><a href="#contacto" class="nav-link relative">Contacto</a></p>
         </div>
         <div class="text-center">
-          <h3 class="text-xl font-semibold mb-4 text-yellow-500">Contáctanos</h3>
+          <h3 class="text-xl font-semibold mb-4 text-yellow-500">Nuestras Redes Sociales</h3>
           <div class="flex justify-center space-x-8">
-            <a href="https://wa.me/your_number" target="_blank" aria-label="Contáctanos por WhatsApp">
+            <a href="https://wa.me/+1234567890" target="_blank" aria-label="Contáctanos por WhatsApp">
               <img src="img/wpp.png" alt="WhatsApp Icon" class="h-8 w-8 hover:opacity-80 transition-opacity">
             </a>
-            <a href="https://instagram.com/your_profile" target="_blank" aria-label="Síguenos en Instagram">
+            <a href="https://instagram.com/tubarberia" target="_blank" aria-label="Síguenos en Instagram">
               <img src="img/insta.png" alt="Instagram Icon" class="h-8 w-8 hover:opacity-80 transition-opacity">
             </a>
           </div>
@@ -254,23 +367,23 @@
   </footer>
 
   <!-- Scroll to Top Button -->
-  <a href="#" id="scroll-top-btn" class="hidden visible">
-    <i class="fas fa-arrow-up text-lg"></i>
+  <a href="#" id="scroll-top-btn" class="hidden">
+    <i class="fas fa-arrow-up text-xl"></i>
   </a>
 
   <!-- AOS and Scroll to Top Script -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
-    // Initialize AOS
     AOS.init();
 
-    // Scroll to Top Button Logic
     const scrollTopBtn = document.getElementById('scroll-top-btn');
     window.addEventListener('scroll', () => {
       if (window.scrollY > 300) {
         scrollTopBtn.classList.add('visible');
+        scrollTopBtn.classList.remove('hidden');
       } else {
         scrollTopBtn.classList.remove('visible');
+        scrollTopBtn.classList.add('hidden');
       }
     });
 
@@ -279,20 +392,35 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // Hamburger Menu Logic
     const hamburger = document.querySelector('.hamburger-menu');
-    const navLinks = document.querySelector('.nav-links');
+    const sidebar = document.querySelector('.sidebar');
     const closeBtn = document.querySelector('.close-btn');
 
     hamburger.addEventListener('click', () => {
-      navLinks.classList.add('active', 'show');
+      sidebar.classList.add('active');
     });
 
     closeBtn.addEventListener('click', () => {
-      navLinks.classList.remove('show');
-      setTimeout(() => {
-        navLinks.classList.remove('active');
-      }, 300);
+      sidebar.classList.remove('active');
+    });
+
+    // Improved smooth scrolling for navigation links
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href').substring(1);
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+          targetElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+          if (sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+          }
+        }
+      });
     });
   </script>
 </body>

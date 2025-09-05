@@ -260,6 +260,45 @@
         transform: translateX(-50%);
       }
     }
+    /* Footer styles for mobile */
+    footer {
+      background-image: url('img/footer-bg.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+    @media (max-width: 640px) {
+      footer {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+      }
+      footer .container {
+        padding: 1rem;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent overlay for readability */
+      }
+      footer .grid {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+      }
+      footer .text-center, footer .text-right, footer .md\\:text-left, footer .md\\:text-right {
+        text-align: center !important;
+      }
+      footer .border-t {
+        margin-top: 2rem;
+        padding-top: 2rem;
+      }
+    }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -462,7 +501,7 @@
 
   <!-- Footer -->
   <footer class="bg-gray-900 text-white py-16" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="100">
-    <div class="container mx-auto px-4">
+    <div class="container mx-auto px-4 flex flex-col justify-center h-full">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
         <div class="text-center md:text-left">
           <div class="flex items-center justify-center md:justify-start mb-4">
@@ -586,6 +625,3 @@
   </script>
 </body>
 </html>
-
-
-

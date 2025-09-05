@@ -111,16 +111,16 @@
       width: 100%;
     }
     .nav-link.reservas {
-      background-color: #facc15; /* Fondo amarillo para el botón de reservas */
-      color: #1f2937; /* Color del texto */
-      padding: 0.5rem 1rem; /* Espaciado interno */
-      border-radius: 0.375rem; /* Bordes redondeados */
+      background-color: #e4b600;
+      color: #1f2937;
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
       transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease-in-out, filter 0.3s ease-in-out;
     }
     .nav-link.reservas:hover {
-      background-color: #eab308; /* Color más oscuro al hacer hover */
-      transform: scale(1.05); /* Escala ligera al pasar el ratón */
-      filter: brightness(1.1); /* Aumenta el brillo */
+      background-color: #eab308;
+      transform: scale(1.05);
+      filter: brightness(1.1);
     }
     /* Sidebar styles */
     .sidebar {
@@ -163,7 +163,7 @@
         color: #facc15;
       }
       .sidebar a.reservas {
-        background-color: #facc15; /* Fondo amarillo para el botón de reservas en la sidebar */
+        background-color: #facc15;
         color: #1f2937;
       }
       .sidebar a.reservas:hover {
@@ -187,7 +187,6 @@
         transform: translateY(0);
       }
     }
-    /* Hero Button Styles */
     .hero-btn {
       transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease-in-out, filter 0.3s ease-in-out;
     }
@@ -200,30 +199,30 @@
     .carousel-container {
       overflow: hidden;
       width: 100%;
-      height: 100px; /* Altura para pantallas pequeñas */
+      height: 100px;
       position: relative;
     }
     @media (min-width: 768px) {
       .carousel-container {
-        height: 120px; /* Altura para pantallas medianas */
+        height: 120px;
       }
     }
     @media (min-width: 1024px) {
       .carousel-container {
-        height: 140px; /* Altura para pantallas grandes */
+        height: 140px;
       }
     }
     .carousel-track {
       display: flex;
-      animation: slide 15s linear infinite;
-      gap: 2rem; /* Espaciado uniforme entre imágenes */
-      width: max-content; /* Permite que el track sea tan ancho como necesite */
+      width: max-content;
+      animation: slide 20s linear infinite;
+      gap: 2rem;
     }
     .carousel-track:hover {
-      animation-play-state: paused; /* Pausa al pasar el ratón */
+      animation-play-state: paused;
     }
     .carousel-item {
-      flex: 0 0 160px; /* Ancho fijo para cada ítem */
+      flex: 0 0 160px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -235,47 +234,35 @@
       transition: transform 0.3s ease;
     }
     .carousel-item img:hover {
-      transform: scale(1.05); /* Escala ligera al pasar el ratón */
+      transform: scale(1.05);
     }
     @media (max-width: 640px) {
       .carousel-item {
-        flex: 0 0 120px; /* Ancho reducido para móviles */
+        flex: 0 0 120px;
       }
       .carousel-item img {
-        max-height: 60px; /* Altura reducida para móviles */
+        max-height: 60px;
       }
       .carousel-track {
-        gap: 1rem; /* Espaciado reducido para móviles */
+        gap: 1rem;
       }
     }
     @media (min-width: 1024px) {
       .carousel-item img {
-        max-height: 100px; /* Altura mayor para pantallas grandes */
+        max-height: 100px;
       }
     }
     @keyframes slide {
-      from {
+      0% {
         transform: translateX(0);
       }
-      to {
-        transform: translateX(calc(-160px * 5 - 2rem * 5)); /* Desplaza las imágenes originales */
-      }
-    }
-    @media (max-width: 640px) {
-      @keyframes slide {
-        from {
-          transform: translateX(0);
-        }
-        to {
-          transform: translateX(calc(-120px * 5 - 1rem * 5)); /* Desplaza para móviles */
-        }
+      100% {
+        transform: translateX(-50%);
       }
     }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
-
-  
   <!-- Navigation -->
   <nav class="fixed top-0 left-0 w-full bg-gray-900 text-white py-4 z-50 shadow-lg">
     <div class="container mx-auto px-4 flex justify-between items-center">
@@ -290,11 +277,8 @@
         <a href="#servicios" class="nav-link relative text-lg font-medium">Servicios</a>
         <a href="#sobre-nosotros" class="nav-link relative text-lg font-medium">Sobre Nosotros</a>
         <a href="#contacto" class="nav-link relative text-lg font-medium">Contacto</a>
-        <a href="reservas.html" class="nav-link reservas relative text-lg font-medium">Reservas</a>
       </div>
     </div>
-
-
     <!-- Sidebar -->
     <div class="sidebar md:hidden">
       <span class="close-btn text-2xl cursor-pointer text-white mb-8">&times;</span>
@@ -373,7 +357,7 @@
     </div>
   </section>
 
-  <!-- Marcas: Sección con carrusel invisible mejorado -->
+  <!-- Marcas: Sección con carrusel mejorado -->
   <section class="py-20 bg-white" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="100">
     <div class="container mx-auto px-4 text-center">
       <h2 class="text-4xl md:text-5xl font-bold mb-10 text-gray-800">Trabajamos con las Mejores Marcas</h2>
@@ -396,10 +380,32 @@
             <img src="img/marca5.jpg" alt="Marca 5">
           </div>
           <div class="carousel-item">
-            <img src="img/marca6.jpg" alt="Marca 5">
+            <img src="img/marca6.jpg" alt="Marca 6">
           </div>
           <div class="carousel-item">
-            <img src="img/marca7.jpg" alt="Marca 5">
+            <img src="img/marca7.jpg" alt="Marca 7">
+          </div>
+          <!-- Ítems duplicados para bucle infinito -->
+          <div class="carousel-item">
+            <img src="img/marca1.jpg" alt="Marca 1">
+          </div>
+          <div class="carousel-item">
+            <img src="img/marca2.jpg" alt="Marca 2">
+          </div>
+          <div class="carousel-item">
+            <img src="img/marca3.jpg" alt="Marca 3">
+          </div>
+          <div class="carousel-item">
+            <img src="img/marca4.jpg" alt="Marca 4">
+          </div>
+          <div class="carousel-item">
+            <img src="img/marca5.jpg" alt="Marca 5">
+          </div>
+          <div class="carousel-item">
+            <img src="img/marca6.jpg" alt="Marca 6">
+          </div>
+          <div class="carousel-item">
+            <img src="img/marca7.jpg" alt="Marca 7">
           </div>
         </div>
       </div>
@@ -458,9 +464,7 @@
   <!-- Footer -->
   <footer class="bg-gray-900 text-white py-16" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="100">
     <div class="container mx-auto px-4">
-      <!-- Grid Layout -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-        <!-- About Section -->
         <div class="text-center md:text-left">
           <div class="flex items-center justify-center md:justify-start mb-4">
             <img src="img/logo-barber.png" alt="Logo" class="h-10 w-10 mr-2">
@@ -469,7 +473,6 @@
           <p class="text-sm text-gray-300 mb-2">Calle 12, 3456, Las Parejas, Sta. Fe.</p>
           <p class="text-sm text-gray-300 max-w-xs mx-auto md:mx-0">Transformamos tu estilo con cortes y afeitados de calidad en un ambiente acogedor.</p>
         </div>
-        <!-- Quick Links -->
         <div class="text-center">
           <h3 class="text-xl font-semibold mb-6 text-yellow-400">Enlaces Rápidos</h3>
           <ul class="space-y-4">
@@ -478,26 +481,21 @@
             <li><a href="#contacto" class="nav-link relative text-gray-300 hover:text-yellow-400 transition-colors">Contacto</a></li>
           </ul>
         </div>
-        <!-- Social Media & Contact -->
         <div class="text-center md:text-right">
           <h3 class="text-xl font-semibold mb-6 text-yellow-400">Conéctate con Nosotros</h3>
           <div class="flex justify-center md:justify-end space-x-6 mb-6">
-            <!-- Facebook -->
             <a href="https://facebook.com/tubarberia" target="_blank" aria-label="Síguenos en Facebook">
               <img src="img/face.png" alt="Facebook Icon" class="h-8 w-8 hover:opacity-80 transition-opacity">
             </a>
-            <!-- WhatsApp -->
             <a href="https://wa.me/+1234567890" target="_blank" aria-label="Contáctanos por WhatsApp">
               <img src="img/wpp.png" alt="WhatsApp Icon" class="h-8 w-8 hover:opacity-80 transition-opacity">
             </a>
-            <!-- Instagram -->
             <a href="https://instagram.com/tubarberia" target="_blank" aria-label="Síguenos en Instagram">
               <img src="img/insta.png" alt="Instagram Icon" class="h-8 w-8 hover:opacity-80 transition-opacity">
             </a>
           </div>
         </div>
       </div>
-      <!-- Bottom Bar -->
       <div class="mt-12 pt-8 border-t border-gray-700 text-center">
         <p class="text-sm text-gray-400">&copy; 2025 Tu Barbería. Todos los derechos reservados.</p>
       </div>
@@ -509,7 +507,7 @@
     <i class="fas fa-arrow-up text-xl"></i>
   </a>
 
-  <!-- AOS and Carousel Script -->
+  <!-- AOS and Navigation Script -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
     AOS.init();
@@ -542,7 +540,6 @@
       sidebar.classList.remove('active');
     });
 
-    // Improved smooth scrolling for navigation links
     const navLinks = document.querySelectorAll('.nav-link');
     navLinks.forEach(link => {
       link.addEventListener('click', (e) => {
@@ -566,113 +563,26 @@
       });
     });
 
-    class BrandCarousel {
-      constructor() {
-        // Seleccionar elementos del DOM
-        this.carouselTrack = document.querySelector('.carousel-track');
-        this.carouselItems = document.querySelectorAll('.carousel-item');
-        this.itemCount = this.carouselItems.length;
-        this.currentIndex = 0;
-        this.animationSpeed = 3000; // Intervalo en milisegundos para transición automática
-
-        // Validar que los elementos existan
-        if (!this.carouselTrack || this.itemCount === 0) {
-          console.error('Error: No se encontraron elementos del carrusel o pista.');
-          return;
-        }
-
-        this.init();
-      }
-
-      init() {
-        // Clonar ítems para efecto infinito
-        this.cloneItems();
-        // Configurar ancho de la pista
-        this.setTrackWidth();
-        // Iniciar animación automática
-        this.startAutoSlide();
-        // Ajustar al redimensionar la ventana
-        this.addResizeListener();
-      }
-
-      cloneItems() {
-        // Clonar ítems para crear un bucle infinito
-        for (let i = 0; i < this.itemCount; i++) {
-          const clone = this.carouselItems[i].cloneNode(true);
-          this.carouselTrack.appendChild(clone);
-        }
-      }
-
-      setTrackWidth() {
-        // Ajustar el ancho de la pista para que contenga todos los ítems (originales + clonados)
-        const totalItems = this.carouselTrack.children.length;
-        this.carouselTrack.style.width = `${totalItems * 100}%`;
-        // Ajustar el ancho de cada ítem
-        this.carouselTrack.querySelectorAll('.carousel-item').forEach(item => {
-          item.style.width = `${100 / totalItems}%`;
-        });
-      }
-
-      slideTo(index) {
-        // Mover la pista a la posición del índice especificado
-        this.carouselTrack.style.transition = 'transform 0.5s ease-in-out';
-        this.carouselTrack.style.transform = `translateX(-${index * (100 / this.carouselTrack.children.length)}%)`;
-        this.currentIndex = index;
-
-        // Reiniciar al inicio cuando se llega al final de los ítems clonados
-        if (this.currentIndex >= this.itemCount) {
-          setTimeout(() => {
-            this.carouselTrack.style.transition = 'none';
-            this.currentIndex = 0;
-            this.carouselTrack.style.transform = `translateX(0)`;
-          }, 500); // Coincide con la duración de la transición
-        }
-      }
-
-      startAutoSlide() {
-        // Iniciar el desplazamiento automático
-        this.autoSlide = setInterval(() => {
-          this.slideTo(this.currentIndex + 1);
-        }, this.animationSpeed);
-      }
-
-      addResizeListener() {
-        // Ajustar el carrusel al redimensionar la ventana
-        window.addEventListener('resize', () => {
-          this.setTrackWidth();
-          this.slideTo(this.currentIndex);
-        });
-      }
-    }
-
-    // Instanciar el carrusel
-    document.addEventListener('DOMContentLoaded', () => {
-      new BrandCarousel();
-    });
-
-    // Ajustar dinámicamente el ancho del track
+    // Carrusel: Ajustar dinámicamente el ancho del track
     const carouselTrack = document.querySelector('.carousel-track');
     const updateTrackWidth = () => {
       const isMobile = window.innerWidth <= 640;
-      const itemWidth = isMobile ? 120 : 160; // Ancho del ítem
-      const gap = isMobile ? 16 : 32; // Gap en px (1rem = 16px, 2rem = 32px)
-      const totalItems = carouselTrack.children.length; // Total de ítems (originales + clones)
+      const itemWidth = isMobile ? 120 : 160;
+      const gap = isMobile ? 16 : 32;
+      const totalItems = carouselTrack.children.length;
       const trackWidth = (itemWidth + gap) * totalItems;
       carouselTrack.style.width = `${trackWidth}px`;
     };
 
-    // Actualizar el ancho inicial
     updateTrackWidth();
-
-    // Actualizar el ancho al redimensionar la ventana
     window.addEventListener('resize', updateTrackWidth);
 
-    // Manejar el bucle infinito
+    // Reinicio suave del carrusel
     carouselTrack.addEventListener('animationiteration', () => {
       carouselTrack.style.transition = 'none';
       carouselTrack.style.transform = 'translateX(0)';
-      void carouselTrack.offsetWidth; // Forzar reflow
-      carouselTrack.style.transition = 'transform 15s linear';
+      void carouselTrack.offsetWidth;
+      carouselTrack.style.transition = 'transform 20s linear';
     });
   </script>
 </body>
